@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Danh Sách Thê Loại</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link th:href="@{/assets/img/favicon.png}" rel="icon">
+  <link th:href="@{/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link th:href="@{/assets/css/style.css}" rel="stylesheet">
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let msg = /*[[${successMessage}]]*/ null;
+    if (msg != null) {
+      alert(msg);
+    }
+    /*]]>*/
+  </script>
+</head>
+
+<body>
+  <header class="header d-flex fixed-top align-items-center row">
+    <div class="d-flex align-items-center justify-content-between col-auto">
+      <a th:href="@{dashboard.html}" class="logo d-flex align-items-center">
+        <img th:src="@{img/6380171.jpg}" alt="">
+        <span class="d-none d-lg-block">LaptopShop</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div>
+    <div class="search-bar col-md-4 col-lg-5">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Tìm kiếm..." title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div>
+    <nav class="header-nav ms-auto align-items-center col-auto ">
+      <ul class="d-flex align-items-center ">
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">4</span>
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-chat-left-text"></i>
+            <span class="badge bg-success badge-number">3</span>
+          </a>
+        </li>
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img th:src="@{assets/img/profile-img.jpg}" alt="Profile" class="rounded-circle mt-2">
+            <span class="d-none d-md-block dropdown-toggle ps-4 mt-4">Duy Vũ</span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Vô Danh</h6>
+              <span>Quản trị viên</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" th:href="@{users-profile.html}">
+                <i class="bi bi-person"></i>
+                <span>Hồ sơ</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" th:href="@{users-profile.html}">
+                <i class="bi bi-gear"></i>
+                <span>Cài đặt</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" th:href="@{pages-faq.html}">
+                <i class="bi bi-question-circle"></i>
+                <span>Hỗ trợ</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" th:href="@{login.html}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Đăng xuất</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " th:href="@{dashboard.html}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link [[${activeMenu == 'user'} ? '' : 'collapsed']]" data-bs-target="#components-nav"
+          data-bs-toggle="collapse" href="#">
+          <i class="bi bi-people"></i><span>Quản lí danh sách</span><i class="bi bi-chevron-down ms-3"></i>
+        </a>
+
+        <ul id="components-nav" class="nav-content collapse [[${activeMenu == 'user'} ? 'show' : '']]"
+          data-bs-parent="#sidebar-nav">
+          <li>
+            <a th:href="@{/user_list}" th:classappend="${activeMenu == 'user'} ? 'active'">
+              <i class="bi bi-person"></i><span>người sử dụng</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#product-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-box-seam"></i><span>Quản lí sản phẩm</span><i class="bi bi-chevron-down ms-3"></i>
+        </a>
+
+        <ul id="product-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a th:href="@{/DsType}">
+              <i class="bi bi-collection"></i><span>Danh sách</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-telephone"></i><span>Liên hệ & hỗ trợ </span><i class="bi bi-chevron-down ms-3"></i>
+        </a>
+
+        <ul id="support-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+          <li>
+            <a href="add.html">
+              <i class="bi bi-envelope"></i><span>Hộp thư</span>
+            </a>
+          </li>
+          <li>
+            <a href="grant-permission.html">
+              <i class="bi bi-telephone-fill"></i><span>Tổng đài</span>
+            </a>
+          </li>
+          <li>
+            <a href="bin.html">
+              <i class="bi bi-shield-check"></i><span>Chính sách bảo hành</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </aside>
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Danh sách thể loại</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index1.html">Home</a></li>
+          <li class="breadcrumb-item">Sản Phẩm</li>
+          <li class="breadcrumb-item active">Danh sách thể loại</li>
+        </ol>
+      </nav>
+
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Datatables</h5>
+              <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#laptopModal1">
+                Thêm Laptop
+              </button>
+              <form method="get" action="#" th:action="@{/admin/DsType}" class="mb-3 d-flex">
+                <input type="text" name="keyword" th:value="${keyword}" class="form-control me-2"
+                  placeholder="Tìm theo tên hoặc model..." />
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+              </form>
+              <!-- Table with stripped rows -->
+              <table class="table  table-striped">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>
+                      <b>N</b>ame
+                    </th>
+                    <th>Model</th>
+                    <th>Hoạt động </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="a : ${list}">
+                    <td th:text="${a.id}">ID</td>
+                    <td
+                      th:text="${#strings.length(a.laptop_name) > 60 ? #strings.substring(a.laptop_name, 0, 60) + '...' : a.laptop_name}">
+                      Name
+                    </td>
+                    <td th:text="${a.laptop_model}"></td>
+                    <td>
+                      <a href="javascript:void(0)" class="btn btn-info me-2" title="Xem chi tiết"
+                        th:attr="data-bs-target=${'#laptopModal-' + a.id}" data-bs-toggle="modal">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                      <a href="/sua" class="btn btn-warning me-2 text-white" th:title="'Sửa: ' + ${a.laptop_name}"
+                        th:attr="data-bs-toggle='modal'" th:data-bs-target="${'#editLaptopModal-' + a.id}">
+                        <i class="bi bi-pencil-square"></i>
+                      </a>
+                      <a th:href="@{'/laptop/delete/' + ${a.id}}" class="btn btn-danger me-2" title="Xóa"
+                        onclick="return confirm('Bạn có chắc muốn xóa?')">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                      <a href="#" class="btn btn-primary" title="Sao chép">
+                        <i class="bi bi-copy"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+              <!--Phan trang-->
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+
+                  <!-- Nút Previous -->
+                  <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${currentPage - 1})}"
+                      aria-label="Previous" tabindex="-1">
+                      <span aria-hidden="true">&laquo;</span>
+                      <span class="visually-hidden">Previous</span>
+                    </a>
+                  </li>
+
+                  <li class="page-item" th:if="${totalPages <= 10}"
+                    th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == i} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${i})}"
+                      th:text="${i + 1}">1</a>
+                  </li>
+
+                  <th:block th:if="${totalPages > 10}">
+
+                    <!-- Trường hợp currentPage <= 5 (gần đầu) -->
+                    <li class="page-item" th:if="${currentPage <= 5}" th:each="i : ${#numbers.sequence(0, 7)}"
+                      th:classappend="${currentPage == i} ? 'active'">
+                      <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${i})}"
+                        th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item disabled" th:if="${currentPage <= 5}">
+                      <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item" th:if="${currentPage <= 5}">
+                      <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${totalPages - 1})}"
+                        th:text="${totalPages}">10</a>
+                    </li>
+
+                    <!-- Trường hợp currentPage >= totalPages - 6 (gần cuối) -->
+                    <li class="page-item" th:if="${currentPage >= totalPages - 6}"
+                      th:each="i : ${#numbers.sequence(totalPages - 8, totalPages - 1)}"
+                      th:classappend="${currentPage == i} ? 'active'">
+                      <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${i})}"
+                        th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item disabled" th:if="${currentPage >= totalPages - 6}">
+                      <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item" th:if="${currentPage >= totalPages - 6}">
+                      <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=0)}">1</a>
+                    </li>
+
+                    <!-- Trường hợp currentPage ở giữa -->
+                    <th:block th:if="${currentPage > 5 and currentPage < totalPages - 6}">
+                      <li class="page-item">
+                        <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=0)}">1</a>
+                      </li>
+                      <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                      </li>
+
+                      <!-- Hiển thị 7 trang quanh currentPage: từ currentPage - 3 đến currentPage + 3 -->
+                      <li class="page-item" th:each="i : ${#numbers.sequence(currentPage - 3, currentPage + 3)}"
+                        th:classappend="${currentPage == i} ? 'active'">
+                        <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${i})}"
+                          th:text="${i + 1}">1</a>
+                      </li>
+
+                      <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                      </li>
+                      <li class="page-item">
+                        <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${totalPages - 1})}"
+                          th:text="${totalPages}">10</a>
+                      </li>
+                    </th:block>
+
+                  </th:block>
+
+                  <!-- Nút Next -->
+                  <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/DsType(keyword=${keyword}, page=${currentPage + 1})}"
+                      aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="visually-hidden">Next</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+
+              <!-- Các MODAL được lặp theo từng laptop -->
+              <div th:each="laptop : ${list}">
+                <div class="modal fade" th:id="'laptopModal-' + ${laptop.id}" tabindex="-1">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" th:text="'Thông tin chi tiết: ' + ${laptop.laptop_name}"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                        <table class="table table-bordered">
+                          <tr>
+                            <th>ID</th>
+                            <td th:text="${laptop.id}"></td>
+                          </tr>
+                          <tr>
+                            <th>Model</th>
+                            <td th:text="${laptop.laptop_model}"></td>
+                          </tr>
+                          <tr>
+                            <th>Giá Gốc</th>
+                            <td th:text="${laptop.laptop_originalPrice}"></td>
+                          </tr>
+                          <tr>
+                            <th>Giá Hiện Tại</th>
+                            <td th:text="${laptop.laptop_currentPrice}"></td>
+                          </tr>
+                          <tr>
+                            <th>Giảm giá</th>
+                            <td th:text="${laptop.laptop_discord}"></td>
+                          </tr>
+                          <tr>
+                            <th>Mô tả</th>
+                            <td th:text="${laptop.laptop_description}"></td>
+                          </tr>
+                          <tr>
+                            <th>Link</th>
+                            <td><a th:href="${laptop.laptop_link}" th:text="${laptop.laptop_link}" target="_blank"></a>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--form sua laptop-->
+              <div th:each="laptop : ${list}">
+                <div class="modal fade" th:id="'editLaptopModal-' + ${laptop.id}" tabindex="-1">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form th:action="@{/laptop/update}" method="post">
+                        <div class="modal-header">
+                          <h5 class="modal-title" th:text="'Sửa Laptop: ' + ${laptop.laptop_name}"></h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          <input type="hidden" name="id" th:value="${laptop.id}" />
+                          <div class="mb-3">
+                            <label>Tên Laptop</label>
+                            <input type="text" class="form-control" name="laptop_name" th:value="${laptop.laptop_name}"
+                              required />
+                          </div>
+                          <div class="mb-3">
+                            <label>Model</label>
+                            <input type="text" class="form-control" name="laptop_model"
+                              th:value="${laptop.laptop_model}" required />
+                          </div>
+                          <div class="mb-3">
+                            <label>Giá Gốc</label>
+                            <input type="text" class="form-control" name="laptop_originalPrice"
+                              th:value="${laptop.laptop_originalPrice}" required />
+                          </div>
+                          <div class="mb-3">
+                            <label>Giá Hiện Tại</label>
+                            <input type="text" class="form-control" name="laptop_currentPrice"
+                              th:value="${laptop.laptop_currentPrice}" required />
+                          </div>
+                          <div class="mb-3">
+                            <label>Giảm Giá</label>
+                            <input type="text" class="form-control" name="laptop_discord"
+                              th:value="${laptop.laptop_discord}" required />
+                          </div>
+                          <div class="mb-3">
+                            <label>Link</label>
+                            <input type="text" class="form-control" name="laptop_link"
+                              th:value="${laptop.laptop_link}" />
+                          </div>
+                          <div class="mb-3">
+                            <label>Mô tả</label>
+                            <textarea class="form-control" name="laptop_description"
+                              th:text="${laptop.laptop_description}" required></textarea>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script th:src="@{/assets/vendor/apexcharts/apexcharts.min.js}"></script>
+  <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/assets/vendor/chart.js/chart.umd.js}"></script>
+  <script th:src="@{/assets/vendor/echarts/echarts.min.js}"></script>
+  <script th:src="@{/assets/vendor/quill/quill.js}"></script>
+  <script th:src="@{/assets/vendor/simple-datatables/simple-datatables.js}"></script>
+  <script th:src="@{/assets/vendor/tinymce/tinymce.min.js}"></script>
+  <script th:src="@{/assets/vendor/php-email-form/validate.js}"></script>
+
+  <!-- Template Main JS File -->
+  <script th:src="@{/assets/js/main.js}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const datatable = new simpleDatatables.DataTable(".datatable");
+    });
+  </script>
+  <script>
+    function validateForm() {
+      // Lấy giá trị từ các input
+      const originalPrice = document.querySelector('input[name="laptop_originalPrice"]').value;
+      const currentPrice = document.querySelector('input[name="laptop_currentPrice"]').value;
+
+      // Kiểm tra có phải số nguyên dương (> 0) không
+      const numberRegex = /^[1-9]\d*$/;
+
+      if (!numberRegex.test(originalPrice)) {
+        alert("Giá Gốc phải là số nguyên dương lớn hơn 0!");
+        return false; // chặn form submit
+      }
+
+      if (!numberRegex.test(currentPrice)) {
+        alert("Giá Hiện Tại phải là số nguyên dương lớn hơn 0!");
+        return false; // chặn form submit
+      }
+
+      // Nếu kiểm tra ok thì submit form
+      return true;
+    }
+  </script>
+  <!-- Modal -->
+  <div class="modal fade" id="laptopModal1" tabindex="-1" aria-labelledby="laptopModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form th:action="@{/laptop/save}" th:object="${laptop}" method="post" onsubmit="return validateForm()">
+          <div class="modal-header">
+            <h5 class="modal-title" id="laptopModalLabel">Thêm Laptop</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Tên Laptop</label>
+              <input type="text" class="form-control" th:field="*{laptop_name}" required>
+            </div>
+            <div class="mb-3">
+              <label>Model</label>
+              <input type="text" class="form-control" th:field="*{laptop_model}" required>
+            </div>
+            <div class="mb-3">
+              <label>Giá Gốc</label>
+              <input type="text" class="form-control" th:field="*{laptop_originalPrice}" required>
+            </div>
+            <div class="mb-3">
+              <label>Giá Hiện Tại</label>
+              <input type="text" class="form-control" th:field="*{laptop_currentPrice}" required>
+            </div>
+            <div class="mb-3">
+              <label>Discord Giảm Giá</label>
+              <input type="text" class="form-control" th:field="*{laptop_discord}" required>
+            </div>
+            <div class="mb-3">
+              <label>Link</label>
+              <input type="text" class="form-control" th:field="*{laptop_link}" required>
+            </div>
+            <div class="mb-3">
+              <label>Mô Tả</label>
+              <textarea class="form-control" th:field="*{laptop_description}" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Lưu</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer clearfix">
+      <div class="copyright">
+        &copy; 2025 LaptopShop
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
