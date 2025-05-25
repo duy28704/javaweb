@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class AuthService {
+public class AuthService implements AuthServiceInterface{
     private final AuthRepository authRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -24,18 +24,19 @@ public class AuthService {
     }
     @Transactional
     public boolean RegisterUser (RegisterRequest req){
-        if( authRepository.existsByUsername(req.getName())) {
+        if( authRepository.existsByUsername(req.getUsername())) {
             return false ;
         }
         User user = new User();
-        user.setUsername(req.getName());
+        user.setUsername(req.getUsername());
         if(req.getPassword().equals(req.getConfirmPassword())) {
-            String password = passwordEncoder.encode(req.getPassword());
-            user.setPassword(password);
+          return false;
         }
+        String password = passwordEncoder.encode(req.getPassword());
+        user.setPassword(password);
         user.setEmail(req.getEmail());
         user.setCreatedDate(LocalDateTime.now());
-        user.setRoles("CUSTOMER");
+        user.setRoles("ROLE_CUSTOMER");
         user.setLogined(false);
         authRepository.save(user);
         return true;

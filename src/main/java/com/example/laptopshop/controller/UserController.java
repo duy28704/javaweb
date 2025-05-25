@@ -49,7 +49,11 @@ public class UserController {
     // 3. Xoá user
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok("Đã xoá người dùng");
+        boolean success = userService.deleteUser(id);
+        if (success) {
+            return ResponseEntity.ok("Đã xoá người dùng");
+        }else {
+            return ResponseEntity.badRequest().body("Không tìm thấy người dùng");
+        }
     }
 }

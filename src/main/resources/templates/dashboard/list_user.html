@@ -127,23 +127,8 @@
 
                 <ul id="product-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="list.html">
+                        <a th:href="@{/DsTpe}">
                             <i class="bi bi-collection"></i><span>Danh sách</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="add.html">
-                            <i class="bi bi-plus-circle"></i><span>Thêm mới</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="grant-permission.html">
-                            <i class="bi bi-tools"></i><span>Cập nhật</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="bin.html">
-                            <i class="bi bi-trash"></i><span>Thùng rác</span>
                         </a>
                     </li>
                 </ul>
@@ -174,8 +159,14 @@
             </li>
         </ul>
     </aside>
-    <main>
-        <h2>Danh sách người dùng</h2>
+    <main class="mt-4">
+        <h2 class="mt-4">Danh sách người dùng</h2>
+        <div class="d-flex justify-content-end mb-2">
+            <button type="button" class="btn btn-sm btn-success" title="Thêm người dùng" data-bs-toggle="modal"
+                data-bs-target="#addModal">
+                <i class="bi bi-plus-square me-1"></i> Thêm người dùng
+            </button>
+        </div>
         <table id="usersTable" class="table table-striped table-bordered">
             <thead class="table-dark">
                 <tr>
@@ -210,6 +201,7 @@
             </tbody>
         </table>
     </main>
+
     <div class="modal fade" id="viewModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -218,106 +210,205 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6"><p><strong>Họ tên:</strong> <span id="view-fullName"></span></p></div>
-                        <div class="col-md-6"><p><strong>Ngày sinh:</strong> <span id="view-birthday"></span></p></div>
-                        <div class="col-md-6"><p><strong>SĐT:</strong> <span id="view-phone"></span></p></div>
-                        <div class="col-md-6"><p><strong>Email:</strong> <span id="view-email"></span></p></div>
-                        <div class="col-md-12"><p><strong>Địa chỉ:</strong> <span id="view-address"></span></p></div>
-                        <div class="col-md-6"><p><strong>Lĩnh vực:</strong> <span id="view-jobArea"></span></p></div>
-                        <div class="col-md-6"><p><strong>Công việc:</strong> <span id="view-job"></span></p></div>
-                        <div class="col-md-6"><p><strong>Chức vụ:</strong> <span id="view-position"></span></p></div>
-                        <div class="col-md-6"><p><strong>Năm ứng tuyển:</strong> <span id="view-applyYear"></span></p></div>
-                        <div class="col-md-12"><p><strong>Ghi chú:</strong> <span id="view-userNotes"></span></p></div>
-                        <div class="col-md-6"><p><strong>Vai trò:</strong> <span id="view-roles"></span></p></div>
-                        <div class="col-md-12"><p><strong>Hành động:</strong> <span id="view-userActions"></span></p></div>
-                      </div>
+                        <div class="col-md-6">
+                            <p><strong>Họ tên:</strong> <span id="view-fullName"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Ngày sinh:</strong> <span id="view-birthday"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>SĐT:</strong> <span id="view-phone"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> <span id="view-email"></span></p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><strong>Địa chỉ:</strong> <span id="view-address"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Lĩnh vực:</strong> <span id="view-jobArea"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Công việc:</strong> <span id="view-job"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Chức vụ:</strong> <span id="view-position"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Năm ứng tuyển:</strong> <span id="view-applyYear"></span></p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><strong>Ghi chú:</strong> <span id="view-userNotes"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Vai trò:</strong> <span id="view-roles"></span></p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><strong>Hành động:</strong> <span id="view-userActions"></span></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button></div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="addUserForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">Thêm người dùng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tài khoản</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Họ tên</label>
+                            <input type="text" class="form-control" id="fullName">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" id="birthday">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control" id="address">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vùng công tác</label>
+                            <input type="text" class="form-control" id="jobArea">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Chức vụ</label>
+                            <input type="text" class="form-control" id="position">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nghề nghiệp</label>
+                            <input type="text" class="form-control" id="job">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Năm ứng tuyển</label>
+                            <input type="number" class="form-control" id="applyYear">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea class="form-control" id="userNotes"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Hành động</label>
+                            <textarea class="form-control" id="userActions"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Vai trò (role)</label>
+                            <input type="text" class="form-control" id="roles" value="USER">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="editModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Chỉnh sửa người dùng</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <form id="editForm">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label for="edit-fullName" class="form-label">Họ và tên</label>
-                    <input type="text" id="edit-fullName" name="fullName" class="form-control">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="edit-birthday" class="form-label">Ngày sinh</label>
-                    <input type="date" id="edit-birthday" name="birthday" class="form-control">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="edit-phone" class="form-label">Số điện thoại</label>
-                    <input type="text" id="edit-phone" name="phone" class="form-control">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="edit-email" class="form-label">Email</label>
-                    <input type="email" id="edit-email" name="email" class="form-control">
-                  </div>
-                  <div class="col-12">
-                    <label for="edit-address" class="form-label">Địa chỉ</label>
-                    <input type="text" id="edit-address" name="address" class="form-control">
-                  </div>
-                  <div class="col-md-4">
-                    <label for="edit-jobArea" class="form-label">Khu vực công việc</label>
-                    <input type="text" id="edit-jobArea" name="jobArea" class="form-control">
-                  </div>
-                  <div class="col-md-4">
-                    <label for="edit-job" class="form-label">Công việc</label>
-                    <input type="text" id="edit-job" name="job" class="form-control">
-                  </div>
-                  <div class="col-md-4">
-                    <label for="edit-position" class="form-label">Chức vụ</label>
-                    <input type="text" id="edit-position" name="position" class="form-control">
-                  </div>
-      
-                  <div class="col-md-4">
-                    <label for="edit-applyYear" class="form-label">Năm ứng tuyển</label>
-                    <input type="number" id="edit-applyYear" name="applyYear" class="form-control">
-                  </div>
-                  <div class="col-md-4">
-                    <label for="edit-roles" class="form-label">Quyền</label>
-                    <input type="text" id="edit-roles" name="roles" class="form-control">
-                  </div>
-                  <div class="col-12">
-                    <label for="edit-userNotes" class="form-label">Ghi chú</label>
-                    <textarea id="edit-userNotes" name="userNotes" class="form-control"></textarea>
-                  </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa người dùng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-              </form>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="edit-id" name="id">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="edit-fullName" class="form-label">Họ và tên</label>
+                                <input type="text" id="edit-fullName" name="fullName" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-birthday" class="form-label">Ngày sinh</label>
+                                <input type="date" id="edit-birthday" name="birthday" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-phone" class="form-label">Số điện thoại</label>
+                                <input type="text" id="edit-phone" name="phone" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-email" class="form-label">Email</label>
+                                <input type="email" id="edit-email" name="email" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label for="edit-address" class="form-label">Địa chỉ</label>
+                                <input type="text" id="edit-address" name="address" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit-jobArea" class="form-label">Khu vực công việc</label>
+                                <input type="text" id="edit-jobArea" name="jobArea" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit-job" class="form-label">Công việc</label>
+                                <input type="text" id="edit-job" name="job" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit-position" class="form-label">Chức vụ</label>
+                                <input type="text" id="edit-position" name="position" class="form-control">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="edit-applyYear" class="form-label">Năm ứng tuyển</label>
+                                <input type="number" id="edit-applyYear" name="applyYear" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit-roles" class="form-label">Quyền</label>
+                                <input type="text" id="edit-roles" name="roles" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label for="edit-userNotes" class="form-label">Ghi chú</label>
+                                <textarea id="edit-userNotes" name="userNotes" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn btn-primary" onclick="submitEditForm()">Lưu thay đổi</button>
+                </div>
             </div>
-      
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button class="btn btn-primary" onclick="submitEditForm()">Lưu thay đổi</button>
-            </div>
-          </div>
         </div>
-      </div>
-      
+    </div>
+
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title">Xác nhận xoá</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Bạn có chắc muốn xoá user có ID: <span id="delete-user-id"></span>?</p>
+                    Bạn có chắc chắn muốn xoá người dùng có ID: <span id="delete-user-id"
+                        class="fw-bold text-danger"></span>?
+                    <input type="hidden" id="delete-user-id-hidden">
                 </div>
                 <div class="modal-footer">
-                    <form th:action="@{/users/delete}" method="post">
-                        <input type="hidden" name="id" id="delete-user-id-hidden">
-                        <button type="submit" class="btn btn-danger">Xoá</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete">Xoá</button>
                 </div>
             </div>
         </div>
@@ -355,86 +446,150 @@
         const viewModal = document.getElementById('viewModal');
         const editModal = document.getElementById('editModal');
         const deleteModal = document.getElementById('deleteModal');
-
+        const addModal = document.getElementById('addModal');
         viewModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const userId = button.getAttribute('data-user-id');
+            const button = event.relatedTarget;
+            const userId = button.getAttribute('data-user-id');
 
-        fetch(`/api/v1/users/user/${userId}`)
-            .then(response => response.json())
-            .then(user => {
-                document.getElementById("view-fullName").textContent = user.fullName;
-                document.getElementById("view-birthday").textContent = user.birthday;
-                document.getElementById("view-phone").textContent = user.phone;
-                document.getElementById("view-email").textContent = user.email;
-                document.getElementById("view-address").textContent = user.address;
-                document.getElementById("view-jobArea").textContent = user.jobArea;
-                document.getElementById("view-job").textContent = user.job;
-                document.getElementById("view-position").textContent = user.position;
-                document.getElementById("view-applyYear").textContent = user.applyYear;
-                document.getElementById("view-userNotes").textContent = user.userNotes;
-                document.getElementById("view-roles").textContent = user.roles;
-                document.getElementById("view-userActions").textContent = user.userActions;
-            });
-    });
+            fetch(`/api/v1/users/user/${userId}`)
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById("view-fullName").textContent = user.fullName;
+                    document.getElementById("view-birthday").textContent = user.birthday;
+                    document.getElementById("view-phone").textContent = user.phone;
+                    document.getElementById("view-email").textContent = user.email;
+                    document.getElementById("view-address").textContent = user.address;
+                    document.getElementById("view-jobArea").textContent = user.jobArea;
+                    document.getElementById("view-job").textContent = user.job;
+                    document.getElementById("view-position").textContent = user.position;
+                    document.getElementById("view-applyYear").textContent = user.applyYear;
+                    document.getElementById("view-userNotes").textContent = user.userNotes;
+                    document.getElementById("view-roles").textContent = user.roles;
+                    document.getElementById("view-userActions").textContent = user.userActions;
+                });
+        });
+        document.getElementById("addUserForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
+            const pf = {
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value,
+                fullName: document.getElementById("fullName").value,
+                birthday: document.getElementById("birthday").value,
+                phone: document.getElementById("phone").value,
+                email: document.getElementById("email").value,
+                address: document.getElementById("address").value,
+                jobArea: document.getElementById("jobArea").value,
+                job: document.getElementById("job").value,
+                position: document.getElementById("position").value,
+                applyYear: parseInt(document.getElementById("applyYear").value),
+                userNotes: document.getElementById("userNotes").value,
+                userActions: document.getElementById("userActions").value,
+                roles: document.getElementById("roles").value
+            };
+
+            fetch("/api/v1/users/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pf)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+                    modal.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    alert("Lỗi: " + error.message);
+                });
+        });
         editModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             fetch(`/api/v1/users/user/${userId}`)
-            .then(response => response.json())
-            .then(user => {
-                document.getElementById('edit-fullName').value = user.fullName;
-                document.getElementById('edit-birthday').value = user.birthday;
-                document.getElementById('edit-phone').value = user.phone;
-                document.getElementById('edit-email').value = user.email;
-                document.getElementById('edit-address').value = user.address;
-                document.getElementById('edit-jobArea').value = user.jobArea;
-                document.getElementById('edit-job').value = user.job;
-                document.getElementById('edit-position').value = user.position;
-                document.getElementById('edit-applyYear').value = user.applyYear;
-                document.getElementById('edit-userNotes').value = user.userNotes;
-                document.getElementById('edit-roles').value = user.roles;
-                document.getElementById('edit-logined').checked = user.logined;
-                document.getElementById('edit-userActions').value = user.userActions;
-            });
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('edit-id').value = user.id;
+                    document.getElementById('edit-fullName').value = user.fullName;
+                    document.getElementById('edit-birthday').value = user.birthday;
+                    document.getElementById('edit-phone').value = user.phone;
+                    document.getElementById('edit-email').value = user.email;
+                    document.getElementById('edit-address').value = user.address;
+                    document.getElementById('edit-jobArea').value = user.jobArea;
+                    document.getElementById('edit-job').value = user.job;
+                    document.getElementById('edit-position').value = user.position;
+                    document.getElementById('edit-applyYear').value = user.applyYear;
+                    document.getElementById('edit-userNotes').value = user.userNotes;
+                    document.getElementById('edit-roles').value = user.roles;
+                    document.getElementById('edit-logined').checked = user.logined;
+                    document.getElementById('edit-userActions').value = user.userActions;
+                });
         });
         function submitEditForm() {
-        const form = document.getElementById('editForm');
-        const formData = new FormData(form);
-        const userId = formData.get("id");
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
+            const form = document.getElementById('editForm');
+            const formData = new FormData(form);
+            const userId = formData.get("id");
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
 
-        fetch(`/api/v1/users/edit/${userId}`, {
-            method: 'PUT', 
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Cập nhật thành công!");
-                location.reload();
-            } else {
-                alert("Cập nhật thất bại.");
-            }
-        })
-        .catch(error => {
-            console.error("Lỗi khi gửi dữ liệu:", error);
-            alert("Đã xảy ra lỗi.");
-        });
-    }
+            fetch(`/api/v1/users/edit/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Cập nhật thành công!");
+                        location.reload();
+                    } else {
+                        alert("Cập nhật thất bại.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi khi gửi dữ liệu:", error);
+                    alert("Đã xảy ra lỗi.");
+                });
+        }
         deleteModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             document.getElementById('delete-user-id').textContent = userId;
             document.getElementById('delete-user-id-hidden').value = userId;
+            document.getElementById('confirm-delete').addEventListener('click', function () {
+                const userId = document.getElementById('delete-user-id-hidden').value;
+
+                fetch(`/api/v1/users/delete/${userId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                        return response.text();
+                    })
+                    .then(message => {
+                        alert(message);
+                        const modal = bootstrap.Modal.getInstance(deleteModal);
+                        modal.hide();
+                        location.reload(); 
+                    })
+                    .catch(error => {
+                        alert(error.message);
+                    });
+            });
+
         });
-    </script>
+</script>
 </body>
 
 </html>
