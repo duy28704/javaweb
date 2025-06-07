@@ -2,6 +2,8 @@ package com.example.laptopshop.controller;
 
 import com.example.laptopshop.dto.LoginRequest;
 import com.example.laptopshop.dto.RegisterRequest;
+import com.example.laptopshop.entity.Laptop;
+import com.example.laptopshop.service.LaptopServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,9 @@ import java.util.List;
 public class ViewController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LaptopServiceImpl laptopService;
 
     @GetMapping("/custom-login")
     public String Login(Model model) {
@@ -49,5 +54,11 @@ public class ViewController {
     @GetMapping("/order")
     public String Order(Model model) {
         return "end_user/order";
+    }
+    @GetMapping("/productList")
+    public String ProductList(Model model) {
+        List<Laptop> laptops = laptopService.getAllLaptops();
+        model.addAttribute("laptops", laptops);
+        return "dashboard/DsType";
     }
 }

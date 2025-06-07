@@ -53,4 +53,8 @@ public class User {
     private LocalDateTime lastModifiedDate;
     @Column(name = "last_logined")
     private LocalDateTime lastLogined;
+    @Column(name = "image_url")
+    private String imageUrl;
+    @Column(name = "deleted")
+    private Boolean deleted;
 }

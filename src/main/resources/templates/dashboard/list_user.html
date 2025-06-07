@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{node_modules/bootstrap/dist/css/bootstrap.css}">
-        <link rel="stylesheet" th:href="@{node_modules/bootstrap-icons/font/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{css/dashboard.css}">
-        <title>Danh sách người dùng</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{node_modules/bootstrap/dist/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{node_modules/bootstrap-icons/font/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{css/dashboard.css}">
+    <title>Danh sách người dùng</title>
 </head>
+
 
 <body>
     <header class="header d-flex fixed-top align-items-center row">
@@ -171,6 +170,7 @@
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
+                    <th>Ảnh đại diện</th>
                     <th>Họ tên</th>
                     <th>Trạng thái đăng nhập</th>
                     <th>Thao tác</th>
@@ -179,6 +179,11 @@
             <tbody>
                 <tr th:each="user : ${users}">
                     <td th:text="${user.id}"></td>
+                    <td>
+                        <img th:src="@{${user.imageUrl}}" alt="Ảnh người dùng"
+                            style="width: 50px; height: 50px; object-fit: cover;" />
+                    </td>
+                    </td>
                     <td th:text="${user.fullName}"></td>
                     <td th:text="${user.logined ? 'Đang online' : 'Ngoại tuyến'}"></td>
                     <td class="d-flex gap-2">
@@ -261,6 +266,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
                     <div class="modal-body row g-3">
+                        <div class="avatar-wrapper col-md-12 d-flex justify-content-center">
+                            <img id="avatarPreview" th:src="@{/img/default.jpg}" class="avatar" alt="Chọn ảnh đại diện">
+                            <input type="file" id="imageUrl" name="imageUrl" accept="image/*">
+                        </div>
                         <div class="col-md-6">
                             <label class="form-label">Tài khoản</label>
                             <input type="text" class="form-control" id="username" required>
@@ -471,7 +480,7 @@
         document.getElementById("addUserForm").addEventListener("submit", function (e) {
             e.preventDefault();
 
-            const pf = {
+            const user = {
                 username: document.getElementById("username").value,
                 password: document.getElementById("password").value,
                 fullName: document.getElementById("fullName").value,
@@ -482,16 +491,23 @@
                 jobArea: document.getElementById("jobArea").value,
                 job: document.getElementById("job").value,
                 position: document.getElementById("position").value,
-                applyYear: parseInt(document.getElementById("applyYear").value),
+                applyYear: document.getElementById("applyYear").value,
                 userNotes: document.getElementById("userNotes").value,
                 userActions: document.getElementById("userActions").value,
-                roles: document.getElementById("roles").value
+                roles: document.getElementById("roles").value,
             };
+
+            const formData = new FormData();
+            formData.append("user", new Blob([JSON.stringify(user)], { type: "application/json" }));
+
+            const imageFile = document.getElementById("imageUrl").files[0];
+            if (imageFile) {
+                formData.append("imageUrl", imageFile);
+            }
 
             fetch("/api/v1/users/add", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(pf)
+                body: formData
             })
                 .then(response => {
                     if (!response.ok) {
@@ -581,7 +597,7 @@
                         alert(message);
                         const modal = bootstrap.Modal.getInstance(deleteModal);
                         modal.hide();
-                        location.reload(); 
+                        location.reload();
                     })
                     .catch(error => {
                         alert(error.message);
@@ -589,7 +605,26 @@
             });
 
         });
-</script>
+    </script>
+    <script>
+        const avatar = document.getElementById("avatarPreview");
+        const fileInput = document.getElementById("imageUrl");
+
+        avatar.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    avatar.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 
 </html>

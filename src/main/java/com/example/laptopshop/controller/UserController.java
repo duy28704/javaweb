@@ -6,6 +6,7 @@ import com.example.laptopshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +26,18 @@ public class UserController {
         Optional<User> user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
-    @PostMapping("/add")
+   /* @PostMapping("/add")
     public ResponseEntity<String> addUser(@RequestBody ProfileForm pf) {
         boolean success = userService.addUser(pf);
+        if (success) {
+            return ResponseEntity.ok("Thêm người dùng thành công");
+        } else {
+            return ResponseEntity.badRequest().body("Dữ liệu không hợp lệ hoặc bị thiếu");
+        }
+    }*/
+    @PostMapping("/add")
+    public ResponseEntity<String> addUser(@RequestPart("user")  ProfileForm pf ,  @RequestParam(value = "imageUrl", required = false) MultipartFile imageFile)  {
+        boolean success = userService.addUser(pf,imageFile);
         if (success) {
             return ResponseEntity.ok("Thêm người dùng thành công");
         } else {

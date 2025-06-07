@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,16 +26,17 @@ public class UserService implements UserServiceInterface{
         this.userRepository = userRepository;
     }
 
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
+
     @Transactional
-    public boolean addUser(ProfileForm pf) {
-        if (pf == null || pf.getUsername() == null || pf.getPassword() == null) {
+    public boolean addUser(ProfileForm pf , MultipartFile imageFile) {
+        if (pf == null || pf.getUsername() == null || pf.getPassword() == null || userRepository.findByUsername(pf.getUsername()).isPresent()) {
             return false;
         }
         User user = new User();
@@ -53,6 +59,24 @@ public class UserService implements UserServiceInterface{
         user.setLastModifiedDate(LocalDateTime.now());
         user.setLogined(false);
         user.setLastLogined(LocalDateTime.now());
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                String uploadDir =  "src/main/resources/static/uploads/";
+                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                Path imagePath = Paths.get(uploadDir + fileName);
+                Files.createDirectories(imagePath.getParent());
+                Files.write(imagePath, imageFile.getBytes());
+
+                // Lưu đường dẫn ảnh
+                user.setImageUrl("/uploads/" + fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }else{
+            user.setImageUrl("/img/default.jpg");
+        }
         userRepository.save(user);
         return true;
     }
@@ -88,7 +112,22 @@ public class UserService implements UserServiceInterface{
         }
         return false;
     }
-
+    /*@Transactional
+    public boolean deleteUser(Long id){
+        Optional<User> userOpt = userRepository.findById(id);
+        if(userOpt.isPresent()){
+            User user = userOpt.get();
+            user.setLastModifiedDate(LocalDateTime.now());
+            //user.setDelete(True);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }*/
+    @Transactional
+    public boolean update(){
+        return true ;
+    }
 
 
 }

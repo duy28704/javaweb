@@ -2,6 +2,7 @@ package com.example.laptopshop.dto;
 
 import lombok.Data;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -9,7 +10,6 @@ import java.time.LocalDateTime;
 public class ProfileForm {
     private String username;
     private String password;
-
     // Thông tin hồ sơ
     private String fullName;
     private LocalDate birthday;

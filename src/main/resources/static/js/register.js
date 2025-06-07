@@ -6,11 +6,16 @@ function CheckPassWord(password) {
   function validateUsername() {
     let username = document.getElementById("username").value.trim();
     let msg = document.getElementById("Message_Username");
-    if (username === "") {
+    if (username === "  ") {
       msg.innerHTML = "Không được để trống";
       msg.style.color = "red";
       return false;
     }
+    if (/\s/.test(username)) {
+        msg.innerHTML = "Tên đăng nhập không được chứa khoảng trắng";
+        msg.style.color = "red";
+        return false;
+      }
     msg.innerHTML = "";
     return true;
   }
@@ -18,11 +23,17 @@ function CheckPassWord(password) {
   function validatePassword() {
     let password = document.getElementById("password").value;
     let msg = document.getElementById("Message_Password");
-    if (password === "") {
+    if (/\s/.test(password)) {
+            msg.innerHTML = "Psssword không được chứa khoảng trắng";
+            msg.style.color = "red";
+            return false;
+          }
+    if (password.trim() === "  ") {
       msg.innerHTML = "Không được để trống";
       msg.style.color = "red";
       return false;
-    } else if (!CheckPassWord(password)) {
+    }
+    if (!CheckPassWord(password)) {
       msg.innerHTML = "Mật khẩu không bắt đầu bằng số và có ít nhất 8 ký tự, trong đó có chữ hoa";
       msg.style.color = "red";
       return false;
@@ -36,11 +47,12 @@ function CheckPassWord(password) {
     let password = document.getElementById("password").value;
     let rePassword = document.getElementById("rePassword").value;
     let msg = document.getElementById("Message_RePassword");
-    if (rePassword === "") {
+    if (rePassword.trim() === "") {
       msg.innerHTML = "Không được để trống";
       msg.style.color = "red";
       return false;
-    } else if (password !== rePassword) {
+    }
+     if (password !== rePassword) {
       msg.innerHTML = "Mật khẩu nhập lại không khớp";
       msg.style.color = "red";
       return false;
@@ -51,19 +63,26 @@ function CheckPassWord(password) {
   }
   
   function validateEmail() {
-    let email = document.getElementById("email").value.trim();
+    let email = document.getElementById("email").value;
     let msg = document.getElementById("Message_Email");
     let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email === "") {
       msg.innerHTML = "Không được để trống";
       msg.style.color = "red";
       return false;
-    } else if (!emailRegex.test(email)) {
+      }
+    if (/\s/.test(email)) {
+          msg.innerHTML = "Email không hợp lệ vì có khoảng trắng";
+          msg.style.color = "red";
+          return false;
+    }
+    if (!emailRegex.test(email)) {
       msg.innerHTML = "Email không hợp lệ";
       msg.style.color = "red";
       return false;
     }
     msg.innerHTML = "Email hợp lệ";
+    msg.style.color = "green";
     return true;
   }
   
