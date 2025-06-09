@@ -43,8 +43,18 @@ public class ViewController {
         model.addAttribute("activeMenu", "user");
         return "dashboard/list_user";
     }
+    @GetMapping("/bin")
+    public String Bin(){
+        return "dashboard/bin";
+    }
+    @GetMapping("/cart")
+    public String Cart(){
+        return "end_user/cart";
+    }
     @GetMapping("/home")
     public String Home(Model model) {
+        List<Laptop> laptops = laptopService.getAllLaptops();
+        model.addAttribute("products", laptops);
         return "end_user/home";
     }
     @GetMapping("/detailproduct")

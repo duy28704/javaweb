@@ -3,6 +3,7 @@ package com.example.laptopshop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -144,6 +145,13 @@ public class Laptop {
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name = "restored", nullable = false)
+    private boolean restored = false;
+
 
     public String getFirstImageUrl() {
         if (this.image_url == null || this.image_url.trim().isEmpty()) {

@@ -117,6 +117,7 @@
                             <i class="bi bi-person"></i><span>người sử dụng</span>
                         </a>
                     </li>
+
                 </ul>
             </li>
             <li class="nav-item">
@@ -126,8 +127,13 @@
 
                 <ul id="product-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a th:href="@{/DsTpe}">
+                        <a th:href="@{/productList}">
                             <i class="bi bi-collection"></i><span>Danh sách</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/bin}">
+                            <i class="bi bi-trash"></i><span>Thùng rác</span>
                         </a>
                     </li>
                 </ul>
@@ -233,7 +239,7 @@
                         <div class="col-md-6"><strong>Tốc độ tối đa:</strong> <span id="view-maxSpeed"></span></div>
 
                         <!-- RAM và Ổ cứng -->
-                        <div class="col-md-4"><strong>Loại RAM:</strong> <span id="view-ramType"></span></div> 
+                        <div class="col-md-4"><strong>Loại RAM:</strong> <span id="view-ramType"></span></div>
                         <div class="col-md-4"><strong>Tốc độ RAM:</strong> <span id="view-ramSpeed"></span></div>
                         <div class="col-md-4"><strong>RAM tối đa:</strong> <span id="view-maxRamSize"></span></div>
                         <div class="col-md-12"><strong>Ổ cứng:</strong> <span id="view-hardDrive"></span></div>
@@ -280,7 +286,7 @@
     </div>
 
     <div class="modal fade" id="addLaptopModal" tabindex="-1" aria-labelledby="addLaptopModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable" >
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <form id="addLaptopForm">
                     <div class="modal-header">
@@ -525,6 +531,7 @@
         </div>
     </div>
 
+    <!-- Modal Xóa -->
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -533,9 +540,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    Bạn có chắc chắn muốn xoá người dùng có ID: <span id="delete-user-id"
-                        class="fw-bold text-danger"></span>?
-                    <input type="hidden" id="delete-user-id-hidden">
+                    Bạn có chắc chắn muốn xoá laptop có ID:
+                    <span id="delete-laptop-id" class="fw-bold text-danger"></span>?
+                    <input type="hidden" id="delete-laptop-id-hidden">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
@@ -544,6 +551,7 @@
             </div>
         </div>
     </div>
+
     <footer>
         <div class="footer clearfix">
             <div class="copyright">
@@ -755,33 +763,34 @@
         }
         deleteModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
-            const userId = button.getAttribute('data-user-id');
-            document.getElementById('delete-user-id').textContent = userId;
-            document.getElementById('delete-user-id-hidden').value = userId;
-            document.getElementById('confirm-delete').addEventListener('click', function () {
-                const userId = document.getElementById('delete-user-id-hidden').value;
-
-                fetch(`/api/v1/users/delete/${userId}`, {
-                    method: 'DELETE'
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => { throw new Error(text); });
-                        }
-                        return response.text();
-                    })
-                    .then(message => {
-                        alert(message);
-                        const modal = bootstrap.Modal.getInstance(deleteModal);
-                        modal.hide();
-                        location.reload();
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            });
-
+            const laptopId = button.getAttribute('data-laptop-id');
+            document.getElementById('delete-laptop-id').textContent = laptopId;
+            document.getElementById('delete-laptop-id-hidden').value = laptopId;
         });
+
+        document.getElementById('confirm-delete').addEventListener('click', function () {
+            const laptopId = document.getElementById('delete-laptop-id-hidden').value;
+
+            fetch(`/api/v1/laptops/delete/${laptopId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message);
+                    const modalInstance = bootstrap.Modal.getInstance(deleteModal);
+                    modalInstance.hide();
+                    location.reload();
+                })
+                .catch(error => {
+                    alert("Lỗi: " + error.message);
+                });
+        });
+
     </script>
     <script>
         const maxImages = 4;

@@ -26,15 +26,7 @@ public class UserController {
         Optional<User> user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
-   /* @PostMapping("/add")
-    public ResponseEntity<String> addUser(@RequestBody ProfileForm pf) {
-        boolean success = userService.addUser(pf);
-        if (success) {
-            return ResponseEntity.ok("Thêm người dùng thành công");
-        } else {
-            return ResponseEntity.badRequest().body("Dữ liệu không hợp lệ hoặc bị thiếu");
-        }
-    }*/
+
     @PostMapping("/add")
     public ResponseEntity<String> addUser(@RequestPart("user")  ProfileForm pf ,  @RequestParam(value = "imageUrl", required = false) MultipartFile imageFile)  {
         boolean success = userService.addUser(pf,imageFile);
@@ -44,7 +36,6 @@ public class UserController {
             return ResponseEntity.badRequest().body("Dữ liệu không hợp lệ hoặc bị thiếu");
         }
     }
-
     // 2. Sửa user
     @PutMapping("/edit/{id}")
     public ResponseEntity<String> editUser(@PathVariable Long id , @RequestBody ProfileForm pf) {

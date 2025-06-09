@@ -1,33 +1,18 @@
 package com.example.laptopshop.controller;
-
 import java.util.List;
 import java.util.Optional;
-
 import com.example.laptopshop.dto.LaptopDTO;
-import com.example.laptopshop.entity.User;
-import com.example.laptopshop.service.UserService;
+import com.example.laptopshop.service.LaptopServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.example.laptopshop.entity.Laptop;
-import com.example.laptopshop.service.LaptopService;
-
 @RestController
-//@RequestMapping("/admin") giúp bạn không phải lặp đi lặp lại /admin ở mỗi method.
-//chuyển hướng màn hình
 @RequestMapping("/api/v1/laptops")
 public class LaptopController {
     @Autowired
-    private LaptopService laptopService;
+    private LaptopServiceImpl laptopService;
 
     @GetMapping("/list")
     public ResponseEntity<List<Laptop>> getAllLaptop() {
@@ -56,8 +41,9 @@ public class LaptopController {
         }
     }
     @PutMapping("/edit/{id}")
-    public ResponseEntity<String> editLaptop(@PathVariable Long id, @RequestBody LaptopDTO laptopDTO) {
-        boolean success = laptopService.editLaptop(id, laptopDTO);
+    public ResponseEntity<String> editLaptop(@PathVariable Long id, @RequestPart("laptop") LaptopDTO laptopDTO,
+                                             @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile) {
+        boolean success = laptopService.editLaptop(id, laptopDTO , imageFile);
         if (success) {
             return ResponseEntity.ok("Cập nhật laptop thành công");
         } else {
@@ -74,5 +60,20 @@ public class LaptopController {
         } else {
             return ResponseEntity.badRequest().body("Không tìm thấy laptop");
         }
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<String> restoreLaptop(@PathVariable Long id) {
+        boolean restored = laptopService.restoreLaptop(id);
+        if (restored) {
+            return ResponseEntity.ok("Khôi phục laptop thành công");
+        } else {
+            return ResponseEntity.badRequest().body("Laptop không tồn tại hoặc chưa bị xóa");
+        }
+    }
+    @GetMapping("/trash")
+    public ResponseEntity<List<Laptop>> getDeletedLaptops() {
+        List<Laptop> deletedLaptops = laptopService.getDeletedLaptops();
+        return ResponseEntity.ok(deletedLaptops);
     }
 }
