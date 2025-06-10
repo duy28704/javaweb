@@ -10,8 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.example.laptopshop.service.UserService;
 import com.example.laptopshop.entity.User;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ViewController {
@@ -27,8 +31,10 @@ public class ViewController {
         return "login/login";
     }
     @GetMapping("/dashboard")
-    public String Dashboard(Model model) {
-        model.addAttribute("activeMenu", "user");
+    public String Dashboard(Model model, Principal principal) {
+        String username = principal.getName();
+        Optional<User> userOptional = userService.findByUserName(username);
+        userOptional.ifPresent(user -> model.addAttribute("user", user));
         return "dashboard/dashboard";
     }
     @GetMapping("/register")
@@ -39,12 +45,16 @@ public class ViewController {
     @GetMapping("/user_list")
     public String listUsers(Model model) {
         List<User> users = userService.getAllUsers();
+        Collections.reverse(users);
         model.addAttribute("users", users);
-        model.addAttribute("activeMenu", "user");
+
         return "dashboard/list_user";
     }
     @GetMapping("/bin")
-    public String Bin(){
+    public String Bin(Model model, Principal principal){
+        String username = principal.getName();
+        Optional<User> userOptional = userService.findByUserName(username);
+        userOptional.ifPresent(user -> model.addAttribute("user", user));
         return "dashboard/bin";
     }
     @GetMapping("/cart")
@@ -58,7 +68,9 @@ public class ViewController {
         return "end_user/home";
     }
     @GetMapping("/detailproduct")
-    public String Detail_product(Model model) {
+    public String Detail_product(@RequestParam("id") Long productId, Model model) {
+        Optional<Laptop> laptops = laptopService.getLaptopById(productId);
+        laptops.ifPresent(laptop -> model.addAttribute("laptop", laptop));
         return "end_user/detailproduct";
     }
     @GetMapping("/order")
@@ -66,8 +78,12 @@ public class ViewController {
         return "end_user/order";
     }
     @GetMapping("/productList")
-    public String ProductList(Model model) {
+    public String ProductList(Model model, Principal principal) {
         List<Laptop> laptops = laptopService.getAllLaptops();
+        Collections.reverse(laptops);
+        String username = principal.getName();
+        Optional<User> userOptional = userService.findByUserName(username);
+        userOptional.ifPresent(user -> model.addAttribute("user", user));
         model.addAttribute("laptops", laptops);
         return "dashboard/DsType";
     }

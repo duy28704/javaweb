@@ -44,8 +44,8 @@
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img th:src="@{assets/img/profile-img.jpg}" alt="Profile" class="rounded-circle mt-2">
-                        <span class="d-none d-md-block dropdown-toggle ps-4 mt-4">Duy Vũ</span>
+                        <img th:src="${user.imageUrl}" alt="Profile" class="rounded-circle mt-2">
+                        <span class="d-none d-md-block dropdown-toggle ps-4 mt-4" th:text="${user.fullName}"></span>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">

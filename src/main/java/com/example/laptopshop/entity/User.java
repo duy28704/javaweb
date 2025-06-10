@@ -16,8 +16,11 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "username")
     private String username;
+    @Column(name = "password")
     private String password;
 
     // Thông tin hồ sơ

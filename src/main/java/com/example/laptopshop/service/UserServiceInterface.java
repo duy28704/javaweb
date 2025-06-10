@@ -12,7 +12,8 @@ public interface UserServiceInterface {
     //@Query("SELECT u FROM users where u.delete = true")
     public List<User> getAllUsers();
     public Optional<User> getUserById(Long id);
-    //public boolean addUser(ProfileForm pf);
+    public Optional<User> findByUserName(String username);
+
     public boolean editUser(Long id , ProfileForm pf);
     public boolean deleteUser(Long id);
     public boolean addUser(ProfileForm pf , MultipartFile imageFile);

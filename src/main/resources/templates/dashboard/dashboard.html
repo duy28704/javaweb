@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th ="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,8 +42,8 @@
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img th:src="@{assets/img/profile-img.jpg}" alt="Profile" class="rounded-circle mt-2">
-                        <span class="d-none d-md-block dropdown-toggle ps-4 mt-4">Duy Vũ</span>
+                        <img th:src="${user.imageUrl}" alt="Profile" class="rounded-circle mt-2">
+                        <span class="d-none d-md-block dropdown-toggle ps-4 mt-4" th:text="${user.fullName}"></span>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -102,13 +103,15 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link [[${activeMenu == 'user'} ? '' : 'collapsed']]" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link [[${activeMenu == 'user'} ? '' : 'collapsed']]" data-bs-target="#components-nav"
+                    data-bs-toggle="collapse" href="#">
                     <i class="bi bi-people"></i><span>Quản lí danh sách</span><i class="bi bi-chevron-down ms-3"></i>
                 </a>
 
-                <ul id="components-nav" class="nav-content collapse [[${activeMenu == 'user'} ? 'show' : '']]" data-bs-parent="#sidebar-nav">
+                <ul id="components-nav" class="nav-content collapse [[${activeMenu == 'user'} ? 'show' : '']]"
+                    data-bs-parent="#sidebar-nav">
                     <li>
-                        <a th:href="@{/user_list}"  th:classappend="${activeMenu == 'user'} ? 'active'">
+                        <a th:href="@{/user_list}" th:classappend="${activeMenu == 'user'} ? 'active'">
                             <i class="bi bi-person"></i><span>người sử dụng</span>
                         </a>
                     </li>
@@ -285,107 +288,81 @@
         </section>
         <div class="col-12 mt-3">
             <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots ms-2"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
+                
                 <div class="card-body">
-                    <h5 class="card-title">Reports<span>/Today</span></h5>
-                    <div id="pieChart"></div>
+                    <h5 class="card-title">Thống kê số lượng</h5>
+                    <div id="barChart"></div>
+
                     <script type="module">
                         import ApexCharts from "./node_modules/apexcharts/dist/apexcharts.esm.js";
+
                         document.addEventListener("DOMContentLoaded", () => {
-                            new ApexCharts(document.querySelector("#pieChart"), {
-                                series: [44, 55, 13, 43, 22],
-                                chart: {
-                                    type: 'pie',
-                                    height: 250
-                                },
-                                labels: ["Laptop Gaming", "Laptop Văn Phòng", "Laptop Đồ Họa", "Laptop Giá Rẻ", "Laptop Cao Cấp"],
-                                colors: ['#FF4560', '#008FFB', '#00E396', '#775DD0', '#FEB019']
-                            }).render();
+                            fetch("/api/v1/stats/model")
+                                .then(res => res.json())
+                                .then(data => {
+                                    const categories = data.map(item => item.model);
+                                    const seriesData = data.map(item => item.stock);
+
+                                    new ApexCharts(document.querySelector("#barChart"), {
+                                        series: [{
+                                            name: "Tồn kho",
+                                            data: seriesData
+                                        }],
+                                        chart: {
+                                            type: 'bar',
+                                            height: 300
+                                        },
+                                        plotOptions: {
+                                            bar: {
+                                                borderRadius: 4,
+                                                horizontal: false
+                                            }
+                                        },
+                                        xaxis: {
+                                            categories: categories
+                                        },
+                                        colors: ['#00E396']
+                                    }).render();
+                                });
                         });
                     </script>
                 </div>
             </div>
             <div class="card mt-3">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots ms-2"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
+                
                 <div class="card-body">
-                    <h5 class="card-title">Reports <span>/Today</span></h5>
-                    <div id="reportsChart"></div>
+                    <h5 class="card-title">Tồn kho theo mức giảm giá</h5>
+                    <div id="lineChart"></div>
 
                     <script type="module">
                         import ApexCharts from "./node_modules/apexcharts/dist/apexcharts.esm.js";
+
                         document.addEventListener("DOMContentLoaded", () => {
-                            new ApexCharts(document.querySelector("#reportsChart"), {
-                                series: [{
-                                    name: 'Sales',
-                                    data: [31, 40, 28, 51, 42, 82, 56],
-                                }, {
-                                    name: 'Revenue',
-                                    data: [11, 32, 45, 32, 34, 52, 41]
-                                }, {
-                                    name: 'Customers',
-                                    data: [15, 11, 32, 18, 9, 24, 11]
-                                }],
-                                chart: {
-                                    height: 350,
-                                    type: 'area',
-                                    toolbar: {
-                                        show: false
-                                    },
-                                },
-                                markers: {
-                                    size: 4
-                                },
-                                colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                                fill: {
-                                    type: "gradient",
-                                    gradient: {
-                                        shadeIntensity: 1,
-                                        opacityFrom: 0.3,
-                                        opacityTo: 0.4,
-                                        stops: [0, 90, 100]
-                                    }
-                                },
-                                dataLabels: {
-                                    enabled: false
-                                },
-                                stroke: {
-                                    curve: 'smooth',
-                                    width: 2
-                                },
-                                xaxis: {
-                                    type: 'datetime',
-                                    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                                },
-                                tooltip: {
-                                    x: {
-                                        format: 'dd/MM/yy HH:mm'
-                                    },
-                                }
-                            }).render();
+                            fetch("/api/v1/stats/stock-discount")
+                                .then(res => res.json())
+                                .then(data => {
+                                    const categories = data.map(item => item.discount);
+                                    const seriesData = data.map(item => item.stock);
+
+                                    new ApexCharts(document.querySelector("#lineChart"), {
+                                        series: [{
+                                            name: "Tồn kho",
+                                            data: seriesData
+                                        }],
+                                        chart: {
+                                            type: 'line',
+                                            height: 300
+                                        },
+                                        xaxis: {
+                                            categories: categories
+                                        },
+                                        colors: ['#008FFB']
+                                    }).render();
+                                });
                         });
                     </script>
                 </div>
+
             </div>
         </div>
     </main>
@@ -395,7 +372,7 @@
                 &copy; 2025 LaptopShop
             </div>
         </div>
-    </footer>   
+    </footer>
     <script type="module" src="node_modules/apexcharts/dist/apexcharts.js"></script>
     <script type="module" src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 </body>

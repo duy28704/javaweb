@@ -20,7 +20,7 @@ public class SecurityConfig {
         return https.
                 authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/custom-login", "/login/**", "/register", "/oauth2/authorization/**",
-                                "/custom-login/oauth2/code/**","/css/**" , "/img/**","/node_modules/**" , "/home/**" , "/assets/**" , "/js/**" ,"/uploads/**" ,"/cart/**").permitAll()
+                                "/custom-login/oauth2/code/**","/css/**" , "/img/**","/node_modules/**" , "/home/**" , "/assets/**" , "/js/**" ,"/uploads/**" ,"/cart/**","/detailproduct/**" ,"/laptop_img/**").permitAll()
                         .requestMatchers("/api/v1/**").permitAll()
                         .requestMatchers("/dashboard/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

@@ -1,9 +1,12 @@
 package com.example.laptopshop.controller;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import com.example.laptopshop.dto.LaptopDTO;
 import com.example.laptopshop.service.LaptopServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ public class LaptopController {
     @GetMapping("/list")
     public ResponseEntity<List<Laptop>> getAllLaptop() {
         List<Laptop>  laptops = laptopService.getAllLaptops();
+        Collections.reverse(laptops);
         return ResponseEntity.ok(laptops);
     }
     @GetMapping("/laptop/{id}")
@@ -28,12 +32,12 @@ public class LaptopController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PostMapping("/add")
+    @PostMapping(value = "/add" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> addLaptop(
             @RequestPart("laptop") LaptopDTO laptopDTO,
-            @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile) {
-
-        boolean success = laptopService.addLaptop(laptopDTO,imageFile);
+            @RequestPart(value = "imageFiles", required = false) MultipartFile[] imageFiles) {
+        System.out.println("Số ảnh nhận được: " + imageFiles.length);
+        boolean success = laptopService.addLaptop(laptopDTO,imageFiles);
         if (success) {
             return ResponseEntity.ok("Thêm laptop thành công");
         } else {

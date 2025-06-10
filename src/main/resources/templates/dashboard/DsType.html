@@ -42,10 +42,9 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown pe-3">
-
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img th:src="@{assets/img/profile-img.jpg}" alt="Profile" class="rounded-circle mt-2">
-                        <span class="d-none d-md-block dropdown-toggle ps-4 mt-4">Duy Vũ</span>
+                        <img th:src="${user.imageUrl}" alt="Profile" class="rounded-circle mt-2">
+                        <span class="d-none d-md-block dropdown-toggle ps-4 mt-4" th:text="${user.fullName}"></span>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -297,10 +296,10 @@
 
                         <!-- Hình ảnh -->
                         <div id="imagePreview" class="image-upload-wrapper d-flex flex-wrap gap-2">
-                            <label for="imageUrls" class="add-image-box">
+                            <label for="imageFiles" class="add-image-box">
                                 <span class="plus-icon">+</span>
                             </label>
-                            <input type="file" id="imageUrls" name="imageUrls" accept="image/*" multiple hidden>
+                            <input type="file" id="imageFiles" name="imageFiles" accept="image/*" multiple hidden>
                         </div>
 
                         <!-- Thông tin chung -->
@@ -568,6 +567,7 @@
         $(document).ready(function () {
             $('#laptopTable').DataTable({
                 pageLength: 3,
+                ordering: false,
                 "language": {
                     "search": "Tìm kiếm:",
                     "lengthMenu": "Hiển thị _MENU_ dòng",
@@ -629,17 +629,23 @@
                     document.getElementById("view-screenCard").textContent = laptop.screen_card;
                     document.getElementById("view-soundTechnology").textContent = laptop.sound_technology;
                     const imageContainer = document.getElementById("view-images");
-                    imageContainer.innerHTML = ""; // Clear cũ
+                    imageContainer.innerHTML = ""; // Clear ảnh cũ
 
-                    laptop.images?.forEach(imgUrl => {
-                        const img = document.createElement("img");
-                        img.src = imgUrl;
-                        img.className = "img-thumbnail m-1";
-                        img.style.width = "150px";
-                        img.style.height = "auto";
-                        imageContainer.appendChild(img);
-                    });
+                    if (laptop.image_url) {
+                        const imageArray = laptop.image_url
+                            .split('|')
+                            .map(img => img.trim())
+                            .filter(img => img.length > 0);
 
+                        imageArray.forEach(imgUrl => {
+                            const img = document.createElement("img");
+                            img.src = imgUrl.startsWith("http") ? imgUrl : "/laptop_img/" + imgUrl;
+                            img.className = "img-thumbnail m-1";
+                            img.style.width = "150px";
+                            img.style.height = "auto";
+                            imageContainer.appendChild(img);
+                        });
+                    }
                 });
         });
         document.getElementById("addLaptopForm").addEventListener("submit", function (e) {
@@ -684,11 +690,11 @@
             const formData = new FormData();
             formData.append("laptop", new Blob([JSON.stringify(laptop)], { type: "application/json" }));
 
-            const imageFiles = document.getElementById("imageUrls").files;
-            for (let i = 0; i < imageFiles.length; i++) {
-                formData.append("imageUrls", imageFiles[i]); // nhiều ảnh nên dùng tên giống nhau
-            }
 
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append("imageFiles", selectedFiles[i]); // nhiều ảnh nên dùng tên giống nhau
+            }
+            console.log("Tổng ảnh:", selectedFiles.length);
             fetch("/api/v1/laptops/add", {
                 method: "POST",
                 body: formData
@@ -794,7 +800,7 @@
     </script>
     <script>
         const maxImages = 4;
-        const imageInput = document.getElementById('imageUrls');
+        const imageInput = document.getElementById('imageFiles');
         const previewContainer = document.getElementById('imagePreview');
         const addButton = previewContainer.querySelector('.add-image-box');
 
@@ -802,7 +808,7 @@
             const count = previewContainer.querySelectorAll('.image-wrapper').length;
             addButton.style.display = count < maxImages ? 'flex' : 'none';
         }
-
+        const selectedFiles = [];
         imageInput.addEventListener('change', function (e) {
             const files = Array.from(e.target.files);
             const existingCount = previewContainer.querySelectorAll('.image-wrapper').length;
@@ -835,7 +841,10 @@
                 };
                 reader.readAsDataURL(file);
             });
+            files.slice(0, availableSlots).forEach(file => {
+                selectedFiles.push(file);
 
+            });
             // Reset input để có thể chọn lại ảnh cũ nếu cần
             e.target.value = '';
         });

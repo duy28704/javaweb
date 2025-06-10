@@ -12,27 +12,6 @@ import java.util.List;
 @Entity
 @Table(name = "tbl_laptop")
 public class Laptop {
-    /*@Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY )//id tự động sinh, ko cần thêm id lúc save 1 new one
-    private int id;
-
-    private String laptop_name;
-
-    private String laptop_model;
-
-    private String laptop_originalPrice;
-
-    private String laptop_currentPrice;
-
-    private String laptop_discord;
-
-    private String laptop_link;
-
-    private String laptop_description;
-
-    public void setId(Integer id) {
-        this.id = id;
-    }*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -148,6 +127,9 @@ public class Laptop {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @Column(name = "stock")
+    private int stock;
 
     @Column(name = "restored", nullable = false)
     private boolean restored = false;

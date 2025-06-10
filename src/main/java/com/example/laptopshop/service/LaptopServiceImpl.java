@@ -14,9 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class LaptopServiceImpl implements LaptopService{
 
@@ -35,7 +35,6 @@ public class LaptopServiceImpl implements LaptopService{
 
         try {
             Laptop laptop = new Laptop();
-
 
             laptop.setName(laptopDTO.getName());
             laptop.setModel(laptopDTO.getModel());
@@ -73,7 +72,7 @@ public class LaptopServiceImpl implements LaptopService{
             laptop.setDeleted(false);
 
             List<String> imageUrls = new ArrayList<>();
-            String uploadDir = "src/main/resources/static/uploads/laptops/";
+            String uploadDir = "src/main/resources/static/laptop_img/";
 
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
@@ -83,7 +82,7 @@ public class LaptopServiceImpl implements LaptopService{
                         Files.createDirectories(path.getParent());
                         Files.write(path, imageFile.getBytes());
 
-                        imageUrls.add("/uploads/laptops/" + fileName);
+                        imageUrls.add("/laptop_img/" + fileName);
                     }
                 }
             }
@@ -246,4 +245,26 @@ public class LaptopServiceImpl implements LaptopService{
             return false;
         }
     }
+    public List<Map<String, Object>> getLaptopStockStats() {
+        List<Object[]> results = laptopRepository.countByModel();
+        List<Map<String, Object>> stats = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("model", row[0]);
+            map.put("stock", row[1]);
+            stats.add(map);
+        }
+        return stats;
+    }
+    public List<Map<String, Object>> getStockByDiscount() {
+        List<Object[]> results = laptopRepository.stockByDiscount();
+        return results.stream().map(obj -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("discount", obj[0]);
+            map.put("stock", obj[1]);
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+
 }
