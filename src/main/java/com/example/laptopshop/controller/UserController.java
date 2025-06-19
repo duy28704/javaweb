@@ -4,11 +4,15 @@ import com.example.laptopshop.dto.ProfileForm;
 import com.example.laptopshop.entity.User;
 import com.example.laptopshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -48,7 +52,7 @@ public class UserController {
     }
 
     // 3. Xoá user
-    @DeleteMapping("/delete/{id}")
+    /*@DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         boolean success = userService.deleteUser(id);
         if (success) {
@@ -56,5 +60,21 @@ public class UserController {
         }else {
             return ResponseEntity.badRequest().body("Không tìm thấy người dùng");
         }
+    }*/
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id, Authentication authentication) {
+        String currentUsername = authentication.getName();
+        try {
+            boolean deleted = userService.deleteUser(id, currentUsername);
+            return ResponseEntity.ok(Map.of("message", "Xóa thành công"));
+        } catch (RuntimeException ex) {
+            String message = ex.getMessage();
+            if (message.contains("Không đủ quyền")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", message));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", message));
+            }
+        }
     }
+
 }

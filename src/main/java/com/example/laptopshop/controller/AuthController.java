@@ -4,7 +4,10 @@ import com.example.laptopshop.dto.LoginRequest;
 import com.example.laptopshop.dto.RegisterRequest;
 import com.example.laptopshop.entity.User;
 import com.example.laptopshop.service.AuthService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -72,5 +75,22 @@ public class AuthController {
                 "message", "Đăng nhập thành công",
                 "role", user.getRoles()
         ));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Huỷ session hiện tại
+        HttpSession session = request.getSession(false); // false: không tạo session mới nếu không có
+        if (session != null) {
+            session.invalidate(); // Hủy session
+        }
+
+        // Xoá cookie JSESSIONID (optional)
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // Xoá cookie
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công!"));
     }
 }

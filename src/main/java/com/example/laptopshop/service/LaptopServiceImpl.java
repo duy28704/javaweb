@@ -3,7 +3,6 @@ package com.example.laptopshop.service;
 import com.example.laptopshop.dto.LaptopDTO;
 import com.example.laptopshop.entity.Laptop;
 import com.example.laptopshop.repository.LaptopRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

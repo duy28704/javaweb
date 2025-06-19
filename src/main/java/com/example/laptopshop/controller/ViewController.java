@@ -43,9 +43,12 @@ public class ViewController {
         return "login/register";
     }
     @GetMapping("/user_list")
-    public String listUsers(Model model) {
+    public String listUsers(Model model , Principal principal) {
         List<User> users = userService.getAllUsers();
         Collections.reverse(users);
+        String username = principal.getName();
+        Optional<User> userOptional = userService.findByUserName(username);
+        userOptional.ifPresent(user -> model.addAttribute("user", user));
         model.addAttribute("users", users);
 
         return "dashboard/list_user";
